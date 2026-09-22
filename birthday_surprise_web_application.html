@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Bestie! 🎂✨</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-dark': '#0d0221',
+                        'purple-deep': '#1a0826',
+                        'magenta-glow': '#2d0b3f',
+                        'night-blue': '#0f051d',
+                        'accent-pink': '#ff4d8d',
+                        'accent-purple': '#a855f7',
+                        'accent-gold': '#f59e0b',
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        dancing: ['Dancing Script', 'cursive'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0d0221 0%, #1a0826 30%, #2d0b3f 70%, #0f051d 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-glow: rgba(255, 77, 141, 0.25);
+            --pink-accent: #ff4d8d;
+            --purple-accent: #c084fc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: #f3f4f6;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Background Canvas */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 1.5rem;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 77, 141, 0.4);
+            box-shadow: 0 12px 40px 0 rgba(255, 77, 141, 0.25);
+        }
+
+        .glass-button {
+            background: linear-gradient(135deg, rgba(255, 77, 141, 0.8), rgba(168, 85, 247, 0.8));
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 77, 141, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .glass-button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 77, 141, 0.7);
+            background: linear-gradient(135deg, rgba(255, 77, 141, 1), rgba(168, 85, 247, 1));
+        }
+
+        .text-glow {
+            text-shadow: 0 0 12px rgba(255, 77, 141, 0.6), 0 0 25px rgba(168, 85, 247, 0.4);
+        }
+
+        .text-glow-gold {
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.7), 0 0 25px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Keyframes Animations */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,77,141,0.5)); }
+            50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(255,77,141,0.9)); }
+        }
+
+        .animate-pulse-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+
+        .animate-float {
+            animation: floatSlow 5s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0221;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #ff4d8d, #a855f7);
+            border-radius: 4px;
+        }
+
+        /* Interactive Gift Box Styles */
+        .gift-container {
+            perspective: 1000px;
+        }
+        .gift-box {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #ff4d8d, #e11d48);
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(255, 77, 141, 0.5);
+            transition: transform 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        .gift-box:hover {
+            transform: scale(1.05) rotateY(10deg);
+        }
+        .gift-box .lid {
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            width: 160px;
+            height: 35px;
+            background: linear-gradient(135deg, #fb7185, #f43f5e);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2;
+        }
+        .gift-box.open .lid {
+            transform: translateY(-80px) rotate(-20deg) scale(0.9);
+            opacity: 0;
+        }
+        .gift-ribbon-v {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 26px;
+            height: 100%;
+            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
+        }
+        .gift-ribbon-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 26px;
+            background: linear-gradient(to right, #f59e0b, #fbbf24);
+        }
+        .gift-bow {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 30px;
+            z-index: 3;
+        }
+        .gift-bow::before, .gift-bow::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border: 5px solid #f59e0b;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+        }
+        .gift-bow::after {
+            left: 20px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+        }
+
+        /* Timeline Connector Line */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #ff4d8d, #a855f7, #3b82f6);
+            transform: translateX(-50%);
+        }
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 20px;
+            }
+        }
+
+        /* Scroll Reveal Utility */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-gray-100 selection:bg-pink-500 selection:text-white">
+
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="fixed top-5 right-5 z-50 flex items-center gap-3">
+        <!-- Edit Name & Message Modal Trigger -->
+        <button id="editBtn" onclick="toggleEditModal()" title="Customize Name & Text" class="glass-button w-11 h-11 rounded-full flex items-center justify-center text-white text-lg">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <!-- Web Audio Melody Synth Toggle -->
+        <button id="musicToggle" onclick="toggleMusic()" class="glass-button px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium text-white shadow-lg">
+            <i class="fa-solid fa-music text-pink-400 animate-bounce" id="musicIcon"></i>
+            <span id="musicStatus">🎵 Play Music</span>
+        </button>
+    </div>
+
+    <div id="introOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-primary-dark via-purple-deep to-night-blue p-6 text-center transition-opacity duration-1000">
+        <div class="max-w-md w-full glass-card p-8 md:p-10 border border-pink-500/30 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl"></div>
+            
+            <div class="text-4xl md:text-5xl mb-4 font-dancing text-pink-400 animate-pulse-glow" id="introTitle">Hey You... ❤️</div>
+            <p class="text-gray-300 text-lg md:text-xl font-light mb-8 h-12 flex items-center justify-center" id="introSubtext"></p>
+            
+            <button onclick="startSurprise()" class="glass-button w-full py-4 rounded-xl text-lg font-semibold text-white tracking-wide shadow-xl flex items-center justify-center gap-3 group">
+                <span>Open Your Surprise</span>
+                <span class="text-2xl group-hover:scale-125 transition-transform">🎁</span>
+            </button>
+        </div>
+    </div>
+
+    <main id="mainContent" class="relative z-10 opacity-0 transition-opacity duration-1000 max-w-6xl mx-auto px-4 py-8 space-y-28">
+
+        <!-- 1. HERO SECTION -->
+        <section id="hero" class="min-h-[85vh] flex flex-col items-center justify-center text-center relative pt-12">
+            <div class="inline-block p-2 px-4 rounded-full glass-card border-pink-500/30 text-pink-300 text-sm font-medium mb-6 animate-float">
+                ✨ A Special Surprise For You
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold font-outfit text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 text-glow mb-4 leading-tight">
+                Happy Birthday! 🎂
+            </h1>
+            
+            <h2 class="text-xl md:text-3xl font-light text-gray-200 mb-2">
+                To My Bestest Friend In The World ❤️
+            </h2>
+            
+            <div class="text-3xl md:text-5xl font-dancing font-bold text-pink-400 text-glow-gold my-4" id="displayFriendName">
+                [Bestie's Name]
+            </div>
+
+            <p class="text-gray-400 max-w-lg mx-auto text-sm md:text-base mb-10 leading-relaxed font-poppins">
+                Today is all about celebrating you, our memories, our endless laughter, and the magical bond we share!
+            </p>
+
+            <a href="#message" class="glass-button px-8 py-4 rounded-full text-lg font-semibold text-white flex items-center gap-3 group">
+                <span>Start The Surprise</span>
+                <i class="fa-solid fa-sparkles text-amber-300 group-hover:rotate-45 transition-transform"></i>
+            </a>
+
+            <!-- Floating scroll down indicator -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-pink-400/60 animate-bounce">
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
+            </div>
+        </section>
+
+        <!-- 2. PERSONALIZED BIRTHDAY MESSAGE (TYPING EFFECT) -->
+        <section id="message" class="reveal scroll-mt-20">
+            <div class="glass-card p-8 md:p-12 relative overflow-hidden border-pink-500/20">
+                <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                    <h2 class="text-2xl md:text-3xl font-bold font-outfit text-pink-300 flex items-center gap-3">
+                        <i class="fa-solid fa-heart text-pink-500 animate-pulse"></i>
+                        <span>Today Is All About You</span>
+                    </h2>
+                    <button onclick="restartTyping()" class="text-xs glass-card px-3 py-1.5 rounded-lg text-pink-300 hover:text-white transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Replay Message
+                    </button>
+                </div>
+
+                <div class="min-h-[160px] bg-black/20 rounded-xl p-6 border border-white/5 font-poppins text-base md:text-lg text-gray-200 leading-relaxed tracking-wide">
+                    <span id="typedMessage"></span><span id="typingCursor" class="inline-block w-2 h-5 bg-pink-400 ml-1 animate-pulse"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MEMORIES / PHOTO GALLERY -->
+        <section id="gallery" class="reveal scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 text-glow">
+                    Our Unforgettable Memories 📸
+                </h2>
+                <p class="text-gray-400 mt-2 text-sm md:text-base">Click any snapshot to enlarge the precious moment!</p>
+            </div>
+
+            <!-- Responsive Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="galleryGrid">
+                <!-- Dynamic or Styled Glass Placeholder Cards -->
+            </div>
+        </section>
+
+        <!-- 4. WHY YOU ARE SPECIAL CARDS (3D TILT EFFECT) -->
+        <section id="specialCards" class="reveal scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-400 text-glow">
+                    Why You're So Special ❤️
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-6 flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 rounded-2xl bg-pink-500/20 flex items-center justify-center text-3xl mb-4 text-pink-400 border border-pink-500/30">
+                        💖
+                    </div>
+                    <h3 class="text-xl font-bold font-outfit text-white mb-2">Always There</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">Through thick and thin, midnight calls, and random advice, you never step away.</p>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-500/20 flex items-center justify-center text-3xl mb-4 text-purple-400 border border-purple-500/30">
+                        😂
+                    </div>
+                    <h3 class="text-xl font-bold font-outfit text-white mb-2">Unlimited Laughs</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">Life is instantly 100x funnier with your ridiculous humor and contagious wheezing laugh!</p>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center text-3xl mb-4 text-amber-400 border border-amber-500/30">
+                        🌟
+                    </div>
+                    <h3 class="text-xl font-bold font-outfit text-white mb-2">One Of A Kind</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">There is genuinely nobody else in the universe with your golden heart and chaotic vibe.</p>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center text-3xl mb-4 text-blue-400 border border-blue-500/30">
+                        🤝
+                    </div>
+                    <h3 class="text-xl font-bold font-outfit text-white mb-2">Forever Friend</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">No matter where time or distance takes us, our bond remains unbreakable forever.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. FRIENDSHIP TIMELINE ("OUR STORY ✨") -->
+        <section id="timeline" class="reveal scroll-mt-20 relative">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold font-outfit text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300 text-glow">
+                    Our Story ✨
+                </h2>
+                <p class="text-gray-400 mt-2 text-sm md:text-base">A few highlights from our crazy journey together</p>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto">
+                <div class="timeline-line"></div>
+
+                <div class="space-y-12">
+                    <!-- Item 1 -->
+                    <div class="relative flex flex-col md:flex-row items-center md:justify-between group">
+                        <div class="w-full md:w-5/12 md:text-right mb-4 md:mb-0 pr-0 md:pr-8">
+                            <div class="glass-card p-6 inline-block w-full">
+                                <span class="text-xs font-semibold text-pink-400 uppercase tracking-wider">Chapter I</span>
+                                <h3 class="text-xl font-bold text-white mt-1">First Meeting</h3>
+                                <p class="text-gray-300 text-sm mt-2">Who knew that a random conversation back then would create the best friendship ever?</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-5 md:left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-pink-500 border-4 border-primary-dark flex items-center justify-center text-white text-xs z-10 shadow-lg shadow-pink-500/50">
+                            ✨
+                        </div>
+                        <div class="w-full md:w-5/12 pl-12 md:pl-8"></div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative flex flex-col md:flex-row items-center md:justify-between group">
+                        <div class="w-full md:w-5/12 pr-0 md:pr-8"></div>
+                        <div class="absolute left-5 md:left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-purple-500 border-4 border-primary-dark flex items-center justify-center text-white text-xs z-10 shadow-lg shadow-purple-500/50">
+                            🎉
+                        </div>
+                        <div class="w-full md:w-5/12 pl-12 md:pl-8 mb-4 md:mb-0">
+                            <div class="glass-card p-6 inline-block w-full">
+                                <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Chapter II</span>
+                                <h3 class="text-xl font-bold text-white mt-1">First Crazy Memory</h3>
+                                <p class="text-gray-300 text-sm mt-2">That unbelievable day where everything went off plan and turned into an iconic story!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="relative flex flex-col md:flex-row items-center md:justify-between group">
+                        <div class="w-full md:w-5/12 md:text-right mb-4 md:mb-0 pr-0 md:pr-8">
+                            <div class="glass-card p-6 inline-block w-full">
+                                <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">Chapter III</span>
+                                <h3 class="text-xl font-bold text-white mt-1">Our Funniest Moment</h3>
+                                <p class="text-gray-300 text-sm mt-2">The joke so hilarious we still can't mention it without burst-laughing in public!</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-5 md:left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-amber-500 border-4 border-primary-dark flex items-center justify-center text-white text-xs z-10 shadow-lg shadow-amber-500/50">
+                            🤣
+                        </div>
+                        <div class="w-full md:w-5/12 pl-12 md:pl-8"></div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="relative flex flex-col md:flex-row items-center md:justify-between group">
+                        <div class="w-full md:w-5/12 pr-0 md:pr-8"></div>
+                        <div class="absolute left-5 md:left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-pink-500 border-4 border-primary-dark flex items-center justify-center text-white text-xs z-10 shadow-lg shadow-pink-500/50">
+                            🎂
+                        </div>
+                        <div class="w-full md:w-5/12 pl-12 md:pl-8">
+                            <div class="glass-card p-6 inline-block w-full border-pink-500/40 bg-pink-500/10">
+                                <span class="text-xs font-semibold text-pink-300 uppercase tracking-wider">Today ❤️</span>
+                                <h3 class="text-xl font-bold text-white mt-1">Celebrating YOU!</h3>
+                                <p class="text-gray-300 text-sm mt-2">Here's to making 100x more insane memories in the coming year!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. BIRTHDAY WISHES & AFFIRMATIONS -->
+        <section id="wishes" class="reveal scroll-mt-20">
+            <div class="glass-card p-8 md:p-14 text-center relative overflow-hidden border-amber-500/30">
+                <div class="absolute top-0 right-0 p-8 opacity-10 text-8xl text-amber-300 select-none">🌟</div>
+                <div class="text-4xl md:text-5xl font-dancing font-bold text-amber-300 mb-4 text-glow-gold">
+                    My Birthday Wish For You 🌟
+                </div>
+                <p class="max-w-2xl mx-auto text-gray-200 text-lg md:text-xl font-poppins leading-relaxed font-light italic">
+                    "May your year ahead be packed with endless adventures, dreams achieved, vibrant health, peace of mind, and all the love you so generously give to others!"
+                </p>
+            </div>
+        </section>
+
+        <!-- 7. INTERACTIVE SURPRISE GIFT BOX -->
+        <section id="giftSection" class="reveal scroll-mt-20 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold font-outfit text-white mb-2">
+                There's One More Surprise...
+            </h2>
+            <p class="text-gray-400 mb-10 text-sm">Tap the magical box to unwrap your final birthday treat!</p>
+
+            <div class="gift-container flex justify-center items-center my-6">
+                <div class="gift-box" id="giftBox" onclick="openGift()">
+                    <div class="lid">
+                        <div class="gift-bow"></div>
+                    </div>
+                    <div class="gift-ribbon-v"></div>
+                    <div class="gift-ribbon-h"></div>
+                </div>
+            </div>
+
+            <p id="giftPrompt" class="text-pink-400 font-semibold animate-pulse text-lg mt-6">
+                Tap to Open ❤️
+            </p>
+        </section>
+
+        <!-- 8. FINAL CELEBRATION & FOOTER -->
+        <section id="finalSection" class="reveal text-center pt-10 pb-16">
+            <div class="glass-card p-10 md:p-16 border-pink-500/40 relative">
+                <h2 class="text-4xl md:text-7xl font-extrabold font-outfit text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-amber-300 text-glow mb-4">
+                    HAPPY BIRTHDAY! ❤️
+                </h2>
+                <p class="text-xl md:text-2xl font-dancing text-pink-300 mb-8">
+                    To My Bestest Friend Forever ✨
+                </p>
+
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <button onclick="triggerConfettiExplosion()" class="glass-button px-6 py-3 rounded-full text-white text-sm font-semibold flex items-center gap-2">
+                        <span>🎉 Burst Confetti!</span>
+                    </button>
+                </div>
+            </div>
+
+            <footer class="mt-16 text-center text-xs text-gray-500">
+                <p>Made with ❤️ just for my best friend</p>
+            </footer>
+        </section>
+
+    </main>
+
+    <div id="imageModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity duration-300" onclick="closeModal()">
+        <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute -top-12 right-0 text-white text-3xl hover:text-pink-400 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modalImg" src="" alt="Memory" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl border border-white/20 object-contain">
+            <p id="modalCaption" class="mt-4 text-center font-outfit text-lg text-pink-300 font-medium"></p>
+        </div>
+    </div>
+
+    <div id="giftModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-lg hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-xl w-full p-8 md:p-10 text-center relative border-pink-500/50 animate-float">
+            <div class="text-5xl mb-4">👑🎂✨</div>
+            <h3 class="text-3xl font-extrabold font-outfit text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-amber-300 mb-4">
+                A Letter From My Heart
+            </h3>
+            <p class="text-gray-200 font-poppins text-base md:text-lg leading-relaxed mb-6 font-light" id="giftModalText">
+                Happy Birthday, <span class="font-bold text-pink-400" id="modalFriendName">Shagun</span>! ❤️<br><br>
+                No matter where life takes us, I hope we always have the same crazy friendship, the same non-stop laughter, and countless new memories.<br><br>
+                Stay amazing. Stay happy. And never forget how truly special you are! 🎂✨
+            </p>
+            <button onclick="closeGiftModal()" class="glass-button px-8 py-3 rounded-full text-white font-semibold">
+                Keep Celebrating! 🎉
+            </button>
+        </div>
+    </div>
+
+    <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 text-left relative">
+            <h3 class="text-xl font-bold font-outfit text-pink-300 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-sliders"></i> Customize Birthday Details
+            </h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Friend's Name:</label>
+                    <input type="text" id="inputName" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-pink-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Personalized Typing Message:</label>
+                    <textarea id="inputMessage" rows="4" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-pink-500 text-sm"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button onclick="toggleEditModal()" class="px-4 py-2 rounded-xl text-xs text-gray-400 hover:text-white">Cancel</button>
+                <button onclick="saveCustomizations()" class="glass-button px-5 py-2 rounded-xl text-xs font-semibold text-white">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let friendName = "Shagun";
+        let birthdayMessage = "Some people come into our lives and instantly become unforgettable. You are truly one of those people! Thank you for all the laughs, midnight conversations, crazy memories, and for simply being you. Wishing you the happiest birthday ever!";
+
+        // Gallery Photos Placeholder Data with CSS/Unsplash high quality fallbacks
+        const memoryList = [
+            { title: "Partner in Crime", url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" },
+            { title: "Unstoppable Laughs", url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80" },
+            { title: "Late Night Talks", url: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80" },
+            { title: "Crazy Adventures", url: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=800&q=80" },
+            { title: "Good Vibes Only", url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80" },
+            { title: "Besties Forever", url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let hearts = [];
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 16 + 8;
+                this.speed = Math.random() * 1.2 + 0.6;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.02;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = Math.random() * 0.03 + 0.01;
+                
+                // Color palette: pink, purple, white, magenta, gold
+                const colors = ['#ff4d8d', '#c084fc', '#ffffff', '#e11d48', '#f59e0b'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.y -= this.speed;
+                this.wobble += this.wobbleSpeed;
+                this.x += Math.sin(this.wobble) * 0.8;
+                this.rotation += this.rotSpeed;
+
+                if (this.y < -30) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+
+                // Draw Heart Path
+                ctx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(0, topCurveHeight);
+                ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class StarParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.alpha = Math.random();
+                this.speed = Math.random() * 0.02 + 0.005;
+            }
+            update() {
+                this.alpha += this.speed;
+                if (this.alpha > 1 || this.alpha < 0) {
+                    this.speed = -this.speed;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.abs(this.alpha);
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initBackground() {
+            hearts = [];
+            particles = [];
+            const count = Math.min(Math.floor(window.innerWidth / 25), 45);
+            for (let i = 0; i < count; i++) {
+                hearts.push(new Heart());
+            }
+            for (let i = 0; i < 60; i++) {
+                particles.push(new StarParticle());
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            hearts.forEach(h => { h.update(); h.draw(); });
+            requestAnimationFrame(animateCanvas);
+        }
+
+        let audioCtx = null;
+        let isPlayingMusic = false;
+        let melodyTimeout = null;
+
+        const melodyNotes = [
+            { note: 264, duration: 0.35 }, { note: 264, duration: 0.25 },
+            { note: 297, duration: 0.6 },  { note: 264, duration: 0.6 },
+            { note: 352, duration: 0.6 },  { note: 330, duration: 1.0 },
+
+            { note: 264, duration: 0.35 }, { note: 264, duration: 0.25 },
+            { note: 297, duration: 0.6 },  { note: 264, duration: 0.6 },
+            { note: 396, duration: 0.6 },  { note: 352, duration: 1.0 },
+
+            { note: 264, duration: 0.35 }, { note: 264, duration: 0.25 },
+            { note: 528, duration: 0.6 },  { note: 440, duration: 0.6 },
+            { note: 352, duration: 0.6 },  { note: 330, duration: 0.6 },
+            { note: 297, duration: 0.8 },
+
+            { note: 466, duration: 0.35 }, { note: 466, duration: 0.25 },
+            { note: 440, duration: 0.6 },  { note: 352, duration: 0.6 },
+            { note: 396, duration: 0.6 },  { note: 352, duration: 1.2 }
+        ];
+
+        function playNote(freq, duration) {
+            if (!isPlayingMusic || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function playMelodyLoop(index = 0) {
+            if (!isPlayingMusic) return;
+            if (index >= melodyNotes.length) index = 0;
+
+            const item = melodyNotes[index];
+            playNote(item.note, item.duration);
+
+            melodyTimeout = setTimeout(() => {
+                playMelodyLoop(index + 1);
+            }, item.duration * 1000 + 80);
+        }
+
+        function toggleMusic() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            isPlayingMusic = !isPlayingMusic;
+            const statusSpan = document.getElementById('musicStatus');
+            const icon = document.getElementById('musicIcon');
+
+            if (isPlayingMusic) {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                statusSpan.textContent = '🎶 Playing Tune';
+                icon.className = 'fa-solid fa-volume-high text-pink-400 animate-bounce';
+                playMelodyLoop(0);
+            } else {
+                statusSpan.textContent = '🎵 Play Music';
+                icon.className = 'fa-solid fa-music text-pink-400';
+                clearTimeout(melodyTimeout);
+            }
+        }
+
+        let typeIndex = 0;
+        let isTyping = false;
+        let typingTimeout = null;
+
+        function typeMessage() {
+            const container = document.getElementById('typedMessage');
+            if (typeIndex < birthdayMessage.length) {
+                container.textContent += birthdayMessage.charAt(typeIndex);
+                typeIndex++;
+                typingTimeout = setTimeout(typeMessage, 35);
+            } else {
+                document.getElementById('typingCursor').style.display = 'none';
+            }
+        }
+
+        function restartTyping() {
+            clearTimeout(typingTimeout);
+            typeIndex = 0;
+            document.getElementById('typedMessage').textContent = '';
+            document.getElementById('typingCursor').style.display = 'inline-block';
+            typeMessage();
+        }
+
+        function initIntroTyping() {
+            const text = "I made something extra special for you...";
+            let i = 0;
+            const target = document.getElementById('introSubtext');
+            target.textContent = '';
+            
+            function step() {
+                if (i < text.length) {
+                    target.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(step, 50);
+                }
+            }
+            setTimeout(step, 800);
+        }
+
+        function startSurprise() {
+            const overlay = document.getElementById('introOverlay');
+            const main = document.getElementById('mainContent');
+            
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                main.style.opacity = '1';
+                restartTyping();
+                triggerConfettiExplosion();
+            }, 1000);
+
+            // Auto start music synth if permitted
+            if (!isPlayingMusic) {
+                toggleMusic();
+            }
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            memoryList.forEach((mem, index) => {
+                const card = document.createElement('div');
+                card.className = "glass-card overflow-hidden group cursor-pointer border border-white/10 hover:border-pink-500/50 transition-all duration-300";
+                card.onclick = () => openModal(mem.url, mem.title);
+
+                card.innerHTML = `
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="${mem.url}" alt="${mem.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/2d0b3f/ff4d8d?text=Memory+${index+1}'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <span class="text-xs font-semibold text-pink-400 uppercase tracking-wider">Memory #${index+1}</span>
+                            <h4 class="text-lg font-bold text-white group-hover:text-pink-300 transition-colors">${mem.title}</h4>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openModal(imgUrl, caption) {
+            document.getElementById('modalImg').src = imgUrl;
+            document.getElementById('modalCaption').textContent = caption;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        let giftOpened = false;
+        function openGift() {
+            if (giftOpened) return;
+            giftOpened = true;
+
+            const box = document.getElementById('giftBox');
+            box.classList.add('open');
+            document.getElementById('giftPrompt').textContent = "✨ Opening Your Present... ✨";
+
+            triggerConfettiExplosion();
+
+            setTimeout(() => {
+                document.getElementById('giftModal').classList.remove('hidden');
+            }, 800);
+        }
+
+        function closeGiftModal() {
+            document.getElementById('giftModal').classList.add('hidden');
+        }
+
+        function triggerConfettiExplosion() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff4d8d', '#a855f7', '#f59e0b', '#3b82f6', '#ffffff']
+                });
+            }
+        }
+
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            reveals.forEach(el => observer.observe(el));
+        }
+
+        function toggleEditModal() {
+            const modal = document.getElementById('editModal');
+            if (modal.classList.contains('hidden')) {
+                document.getElementById('inputName').value = friendName;
+                document.getElementById('inputMessage').value = birthdayMessage;
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function saveCustomizations() {
+            const newName = document.getElementById('inputName').value.trim();
+            const newMessage = document.getElementById('inputMessage').value.trim();
+
+            if (newName) {
+                friendName = newName;
+                document.getElementById('displayFriendName').textContent = friendName;
+                document.getElementById('modalFriendName').textContent = friendName;
+            }
+
+            if (newMessage) {
+                birthdayMessage = newMessage;
+                restartTyping();
+            }
+
+            toggleEditModal();
+            triggerConfettiExplosion();
+        }
+
+        window.onload = function() {
+            initBackground();
+            animateCanvas();
+            initIntroTyping();
+            renderGallery();
+            initScrollReveal();
+
+            // Populate initial names
+            document.getElementById('displayFriendName').textContent = friendName;
+            document.getElementById('modalFriendName').textContent = friendName;
+        };
+    </script>
+</body>
+</html>
